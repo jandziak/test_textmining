@@ -78,7 +78,6 @@ length(freq)
 ord <- order(freq,decreasing=TRUE)
 #List all terms in decreasing order of freq and write to disk
 freq[ord]
-write.csv(freq[ord],"word_freq.csv")
 
 
 #load topic models library
