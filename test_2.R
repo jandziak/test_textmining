@@ -84,7 +84,11 @@ freq[ord]
 library(topicmodels)
 
 
-ldaOut <- train(dtm, no_of_topics = 5, method = "LDA_topic_models")
+ldaOut <- train(dtm, k = 5, package = "topicmodels")
+
+pred <- predict(ldaOut, dtm)
+rowSums(pred)
+colSums(pred)
 
 ldaOut <- ldaOut$model
 
@@ -105,3 +109,4 @@ topic1ToTopic2 <- lapply(1:nrow(dtm),function(x)
 #Find relative importance of second and third most important topics
 topic2ToTopic3 <- lapply(1:nrow(dtm),function(x)
   sort(topicProbabilities[x,])[k-1]/sort(topicProbabilities[x,])[k-2])
+  
