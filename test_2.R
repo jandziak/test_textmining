@@ -1,12 +1,10 @@
-library(devtools) 
-install_github('jandziak/textmining')
 library(textmining)
 
 library(SnowballC)
 
 
 # create corpus from vector
-docs <- tmCorpus(x = DirSource("predict"), method = "tm")
+docs <- tmCorpus(x = DirSource("predict"), package = "tm")
 #start preprocessing
 #Transform to lower case
 docs <-tm_map(docs,content_transformer(tolower))
@@ -37,15 +35,7 @@ docs <- tm_map(docs,stemDocument)
 
 #fix up 1) differences between us and aussie english 2) general errors
 docs <- tm_map(docs, content_transformer(gsub),
-               pattern = "organiz", replacement = "organ")
-docs <- tm_map(docs, content_transformer(gsub),
-               pattern = "organis", replacement = "organ")
-docs <- tm_map(docs, content_transformer(gsub),
-               pattern = "andgovern", replacement = "govern")
-docs <- tm_map(docs, content_transformer(gsub),
-               pattern = "inenterpris", replacement = "enterpris")
-docs <- tm_map(docs, content_transformer(gsub),
-               pattern = "team-", replacement = "team")
+               pattern = "love", replacement = "hate")
 #define and eliminate all custom stopwords
 myStopwords <- c("can", "say","one","way","use",
                  "also","howev","tell","will",
@@ -109,4 +99,54 @@ topic1ToTopic2 <- lapply(1:nrow(dtm),function(x)
 #Find relative importance of second and third most important topics
 topic2ToTopic3 <- lapply(1:nrow(dtm),function(x)
   sort(topicProbabilities[x,])[k-1]/sort(topicProbabilities[x,])[k-2])
+
+
+
+tdm.1g <- TermDocumentMatrix(docs)
+dtm.1g <- DocumentTermMatrix(docs)
+
+findFreqTerms(tdm.1g, 40)
+findFreqTerms(tdm.1g, 60)
+findFreqTerms(tdm.1g, 80)
+findFreqTerms(tdm.1g, 100)
+
+findAssocs(dtm.1g, "skin", .75)
+findAssocs(dtm.1g, "scienc", .5)
+findAssocs(dtm.1g, "product", .75) 
+
+tdm89.1g <- removeSparseTerms(tdm.1g, 0.89)
+tdm9.1g  <- removeSparseTerms(tdm.1g, 0.9)
+tdm91.1g <- removeSparseTerms(tdm.1g, 0.91)
+tdm92.1g <- removeSparseTerms(tdm.1g, 0.3)
+
+tdm2.1g <- tdm92.1g
+
+# Creates a Boolean matrix (counts # docs w/terms, not raw # terms)
+tdm3.1g <- inspect(tdm2.1g)
+tdm3.1g[tdm3.1g>=1] <- 1 
+
+# Transform into a term-term adjacency matrix
+termMatrix.1gram <- tdm3.1g %*% t(tdm3.1g)
+
+# inspect terms numbered 5 to 10
+termMatrix.1gram[5:10,5:10]
+termMatrix.1gram[1:10,1:10]
+
+# Create a WordCloud to Visualize the Text Data ---------------------------
+notsparse <- tdm2.1g
+m = as.matrix(notsparse)
+v = sort(rowSums(m),decreasing=TRUE)
+d = data.frame(word = names(v),freq=v)
+
+library(RColorBrewer)
+library(wordcloud)
+# Create the word cloud
+pal = brewer.pal(9,"BuPu")
+wordcloud(words = d$word,
+          freq = d$freq,
+          scale = c(3,.8),
+          random.order = F,
+          colors = pal)
+
+
   
