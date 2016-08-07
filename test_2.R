@@ -20,6 +20,10 @@ docs <- tm_map(docs, toSpace, "•")
 docs <- tm_map(docs, toSpace, "\"")
 docs <- tm_map(docs, toSpace, "'")
 
+docs1 <- tm_filter(corp, FUN = function(x) meta(x, "language") == "pl")
+length(docs1)
+docs <- tm_filter(corp, FUN = function(x) meta(x, "language") == "en")
+length(docs)
 #remove punctuation
 docs <- tm_map(docs, removePunctuation)
 #Strip digits

@@ -23,3 +23,9 @@ topic_wordcloud(model, topic_id = 1, k = 100)
 
 network <- gepi_network(20 ,table$words)
 network
+
+# Create mallet topic model using implemented stopwordslist
+model <- train(new, 20, c("Ala", "Ma", "Kota", "ala", "ma", "kota"))
+predict(model, new2)
+
+
