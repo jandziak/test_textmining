@@ -21,7 +21,7 @@ table <- topic_table(model)
 
 topic_wordcloud(model, topic_id = 1, k = 100)
 
-network <- gepi_network(20 ,table$words)
+network <- topic_network(20 ,model = model)
 network
 
 # Create mallet topic model using implemented stopwordslist
