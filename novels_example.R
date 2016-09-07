@@ -1,4 +1,9 @@
 library(textmining)
+
+data("novels")
+docs <- as.tmCorpus(novels)
+
+library(textmining)
 library(SnowballC)
 
 
@@ -10,12 +15,12 @@ docs <-tm_map(docs,content_transformer(tolower))
 
 #remove potentially problematic symbols
 toSpace <- content_transformer(function(x, pattern) 
-  { return (gsub(pattern, " ", x))})
+{ return (gsub(pattern, " ", x))})
 
 docs <- tm_map(docs, toSpace, "-")
-docs <- tm_map(docs, toSpace, "’")
-docs <- tm_map(docs, toSpace, "‘")
-docs <- tm_map(docs, toSpace, "•")
+docs <- tm_map(docs, toSpace, "â€™")
+docs <- tm_map(docs, toSpace, "â€")
+docs <- tm_map(docs, toSpace, "â€˘")
 docs <- tm_map(docs, toSpace, "\"")
 docs <- tm_map(docs, toSpace, "'")
 
@@ -47,8 +52,8 @@ myStopwords <- c("can", "say","one","way","use",
                  "get","well","make","ask","come","end",
                  "first","two","help","often","may",
                  "might","see","someth","thing","point",
-                 "post","look","right","now","think","‘ve ",
-                 "‘re ","anoth","put","set","new","good",
+                 "post","look","right","now","think","â€ve ",
+                 "â€re ","anoth","put","set","new","good",
                  "want","sure","kind","larg","yes,","day","etc",
                  "quit","sinc","attempt","lack","seen","awar",
                  "littl","ever","moreov","though","found","abl",
@@ -78,6 +83,9 @@ library(topicmodels)
 
 
 ldaOut <- train(dtm, k = 5, package = "topicmodels")
+
+topic_network(20, ldaOut)
+topic_wordcloud(ldaOut, topic_id = 1, k = 100)
 
 pred <- predict(ldaOut, dtm)
 rowSums(pred)
@@ -149,7 +157,7 @@ wordcloud(words = d$word,
           freq = d$freq,
           scale = c(3,.8),
           random.order = F,
-          colors = pal)
+          colors = pal,
+          max.words = 200)
 
-
-  
+topic_network(10, ldaOut$model)

@@ -41,6 +41,6 @@ corp7[1]
 
 new <- corp7[c(1,3,5)]
 class(new) <- "tmCorpus"
-tm_filter(corp7, function(x) getMeta())
+tm_filter(corp7, function(x) getMeta(x, "language") == "pl")
 
 a <- tm_filter(corp, FUN = function(x) meta(x, "language") == "en")
